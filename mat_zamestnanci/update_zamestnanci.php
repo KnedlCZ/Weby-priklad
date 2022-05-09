@@ -1,5 +1,4 @@
 <?php include('db.php') ?>
-<?php include('overeni.php') ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,47 +10,56 @@
     <title>Document</title>
 </head>
 <body>
-    
+<?php include('overeni.php') ?>
+
     <div class="box">
         <form action="" method="post">
-        <h1>Přidat oddělení</h1>
+        <h1>Přidat zaměstnance</h1>
+
         <div class="container">
             <hr>
-            <label for="jmeno"><b>Název</b></label>
-            <input type="text" placeholder="Zadejte Název" name="jmeno" id="jmeno" required>
+            <select name="jmeno">
+                
+            <?php 
+            $id = $_GET['id']; 
+            $sql2 = mysqli_query($conn, "SELECT * FROM oddeleni");
+            while ($row = mysqli_fetch_array($sql2)){
+                echo "<option value='{$row['id_oddeleni']}'>{$row['nazev']}</option>";
+            }
+            ?>
+            </select>
+            <br>
+            <label for="prijmeni"><b><? $_POST['jmeno'] ?></b></label>
+            <input type="text" placeholder="Zadejte Jméno" name="prijmeni" id="prijmeni" required>
 
-            <label for="prijmeni"><b>zkratka</b></label>
-            <input type="text" placeholder="Zadejte Zkratku" name="prijmeni" id="prijmeni" required>
+            <label for="firma"><b>Přijmení</b></label>
+            <input type="text" placeholder="Zadejte Příjmení" name="firma" id="firma" required>
 
-            <label for="firma"><b>město</b></label>
-            <input type="text" placeholder="Zadejte Název Města" name="firma" id="firma" required>
-
-            <label for="email"><b>barva</b></label>
-            <input type="color" placeholder="Zadejte Barvu" name="email" id="email" required>
+            <label for="email"><b>Datum nástupu</b></label>
+            <input type="date" placeholder="Zadejte datum nástupu" name="email" id="email" max="<?php echo date("Y-m-d"); ?>" required>
 
             <hr>
             <button type="submit" class="register_tlacitko" name="submit">Přidat</button>    
             </div>        
         </form>
-
         <!-- INSERT -->
         <script>
                 <?php include 'db.php' ?>
                 <?php
-
+                    $id = $_GET['id']; 
                     if(isset($_POST['submit']))
                     {    
                         $jmeno = $_POST['jmeno'];
                         $prijmeni = $_POST['prijmeni'];
                         $nazev_firmy = $_POST['firma'];
                         $email = $_POST['email'];
-                        $sql = "INSERT INTO oddeleni (nazev,zkratka,mesto,barva)
-                        VALUES ('$jmeno','$prijmeni','$nazev_firmy','$email')";
+                        $sql = "UPDATE  zamestnanci SET oddeleni = '$jmeno',jmeno = '$prijmeni',prijmeni = '$nazev_firmy',datum_nastupu = '$email' WHERE id_zamestnance='$id'";
                         if (mysqli_query($conn, $sql)) {
                             echo "New record has been added successfully !";
                         } else {
                             echo "Error: " . $sql . ":-" . mysqli_error($conn);
                         }
+                        header('Location: zamestnanci.php');
                         mysqli_close($conn);
                     }
                 ?>

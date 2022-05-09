@@ -40,6 +40,8 @@
 
         <!-- INSERT -->
         <script>
+            <?php include('overeni.php') ?>
+
                 <?php include 'db.php' ?>
                 <?php
 
@@ -51,12 +53,13 @@
                         $jmeno = $_POST['jmeno'];
                         $prijmeni = $_POST['prijmeni'];
                         $nazev_firmy = $_POST['firma'];
-                        $email = $_POST['email'];
+                        $email = strtolower($_POST['email']);
                         $heslo = PASSWORD_HASH($_POST["heslo"], PASSWORD_DEFAULT);
                         $sql = "INSERT INTO uzivatel (jmeno,prijmeni,nazev_firmy,email,heslo)
                         VALUES ('$jmeno','$prijmeni','$nazev_firmy','$email','$heslo')";
                         if (mysqli_query($conn, $sql)) {
-                            echo "New record has been added successfully !";
+                            mysqli_close($conn);
+                            header("location:index.php");
                         } else {
                             echo "Error: " . $sql . ":-" . mysqli_error($conn);
                         }
